@@ -1,63 +1,52 @@
-import React, { Component } from 'react';
-import axios, { post } from 'axios';
+import React from 'react';
+import { Container, Row, Col, Input, Button, Fa, Modal, ModalBody, ModalHeader, ModalFooter } from 'mdbreact';
 
-class Upload extends Component {
+class FormsPage extends React.Component  {
   constructor(props) {
     super(props);
-    this.state ={
-      file:null
+    this.state = {
+      modal: false
     }
-    this.onFormSubmit = this.onFormSubmit.bind(this);
-    this.onChange = this.onChange.bind(this)
-    this.fileUpload = this.fileUpload.bind(this)
+    this.toggle = this.toggle.bind(this);
   }
 
-
-  onFormSubmit(e){
-    e.preventDefault()
-    this.fileUpload(this.state.file).then((response) =>{
-      console.log(response.data);
-    })
+  toggle() {
+    this.setState({
+      modal: !this.state.modal
+    });
   }
-
-  onChange(e){
-    this.setState({file:e.target.files[0]})
-  }
-  fileUpload(file){
-    const url ='http://example.com/file-upload';
-    const formData = new FormData ();
-    formData.append('file', file)
-    const config = {
-      headers: {
-        'content-type': 'multipart/form-data'
-    }
-  }
-  return post (url, formData, config)
-}
-
 
   render() {
-    return (
-
-  <form onSubmit={this.onFormSubmit}>
-  <label>
-    ETH Address:
-    <input type="text" name="address" />
-  </label>
-  <label>
-    Device:
-    <input type="text" name="device" />
-  </label>
-  <label>
-    File Upload (CSV only)
-    <input type="file" onChange={this.onChange} />
-  </label>
-  <input type="submit" value="Submit" />
-  </form>
-
-    )
+    return(
+      <Container>
+        <Row>
+          <Col md="6">
+            <Button color="info" onClick={this.toggle}>Launch dPanc's Smart Contract</Button>
+            <Modal isOpen={this.state.modal} toggle={this.toggle} className="cascading-modal">
+              <div className="modal-header primary-color white-text">
+                <h4 className="title">
+                  <Fa className="fa fa-pencil" /> Contact form</h4>
+                <button type="button" className="close" onClick={this.toggle}>
+                  <span aria-hidden="true">×</span>
+                </button>
+              </div>
+              <ModalBody className="grey-text">
+                <Input size="sm" label="Your Ethereum Address" icon="user" group type="text" validate error="wrong" success="right"/>
+                <Input size="sm" label="Device" icon="envelope" group type="email" validate error="wrong" success="right"/>
+                <Input size="sm" label="Upload Your CSV" icon="upload" group type="file" validate error="wrong" success="right"/>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="secondary" onClick={this.toggle}>Close</Button>{' '}
+                <Button color="primary">Save changes</Button>
+              </ModalFooter>
+            </Modal>
+          </Col>
+        </Row>
+      </Container>
+    );
   }
-}
+};
+
+export default FormsPage;
 
 
-export default Upload;
